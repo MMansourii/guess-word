@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Word Guess</title>
+    <style>
+        .box{
+            display: inline-block;
+            width: 100;
+            height: 30px;
+            vertical-align: middle;
+            padding: 12px;
+            margin: 8px;
+            border: 1px solid tomato;
+        }
+        .hidden{
+            visibility: hidden;
+        }
+    </style>
+</head>
+<body>
+    <script>
+        const myWords = ['Javascript','Html','CSS','React','React Native','VS Code','Github'];
+        window.addEventListener('load',init);
+        let cur = 0;
+        let startTime ;
+        function init(){
+            const div = document.createElement('div');
+            div.setAttribute('class','message');
+            div.innerText='Press Start  Button';
+            document.body.appendChild(div);
+            const button = document.createElement('button');
+            button.addEventListener('click',start);
+            button.innerText = 'Start';
+            document.body.appendChild(button);
+            const div1 = document.createElement('div');
+            div1.classList.add('game');
+            document.body.appendChild(div1);
+        }
+        function start(){
+            cur = 0 ;
+            startTime = Date.parse(new Date());
+            this.style.display = 'none' ;
+            const tempArray = myWords.slice(0);
+            tempArray.sort((a,b)=>{
+                return 0.5 - Math.random();
+            });
+            const game = document.querySelector('.game');
+            tempArray.forEach(item =>{
+                
+                let temp = item.split('');
+
+                temp.sort((a,b)=>{return 0.5 - Math.random()});
+                 temp = temp.join('');
+                 
+                 const element  = document.createElement('div');
+                 element.innerText  = 'Select';
+                 element.classList.add('box');
+                 element.word = item;
+                 element.addEventListener('click',(e)=>{
+                        console.log(e.target.word);
+                        if(element.word === myWords[cur]){
+                            e.target.classList.add('hidden');
+                            cur++;
+                            nextWord();
+                            console.log('correct');
+                        }else{
+                            console.log('wron');
+                        }
+                 });
+                 
+                 element.addEventListener('mouseenter',()=>{
+                    element.style.backgroundColor = 'white';
+                     element.innerText = temp ;
+                 });
+                 element.addEventListener('mouseleave',()=>{
+                    element.style.backgroundColor = 'red';
+                 element.innerText = 'Select' ;
+                 });
+
+                 game.appendChild(element);
+            });
+           nextWord();
+        }
+        function nextWord(){
+            if(cur >= myWords.length){
+                let endTime = Date.parse(new Date());
+                const duration = (endTime - startTime) /1000 ;
+                document.querySelector('.game').innerHTML = '';
+                document.querySelector('button').style.display = 'block';
+                message('Game Over Played in ' + duration +' Seconds');
+            }else{
+                message('Select this Word  :' + myWords[cur]);
+
+            }
+            
+        }
+        function message (str){
+            const msg = document.querySelector('.message');
+            msg.innerText = str;
+        }
+    </script>
+</body>
+</html>
